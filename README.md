@@ -1,4 +1,4 @@
-# 🧠 Synapse: Seu Segundo Cérebro Local
+#  Synapse: Seu Segundo Cérebro Local
 
 ![Versão do .NET](https://img.shields.io/badge/.NET-8.0-blue?logo=dotnet)
 ![Linguagem](https://img.shields.io/badge/C%23-12-purple?logo=csharp)

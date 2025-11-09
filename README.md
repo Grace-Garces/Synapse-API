@@ -65,7 +65,7 @@ Este fluxo é acionado quando um usuário faz upload de arquivos para uma coleç
 
 ```mermaid
 flowchart TD
-    A[Usuário faz upload de arquivos (PDF, XLSX, ...)] --> B[API: CollectionController];
+    A["Usuário faz upload de arquivos (PDF, XLSX, ...)"] --> B[API: CollectionController];
     B --> C[Serviço: FileProcessorService];
     C -- Extrai Texto --> D[Texto Puro];
     D --> E[Serviço: DataIngestionService];

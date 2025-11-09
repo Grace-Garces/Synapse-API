@@ -65,12 +65,12 @@ Este fluxo é acionado quando um usuário faz upload de arquivos para uma coleç
 
 ```mermaid
 flowchart TD
-    A["Usuário faz upload de arquivos (PDF, XLSX, ...)"] --> B[API: CollectionController];
-    B --> C[Serviço: FileProcessorService];
-    C -- Extrai Texto --> D[Texto Puro];
-    D --> E[Serviço: DataIngestionService];
-    E -- Divide em Chunks --> F[Pedaços de Texto];
-    F --> G[Serviço: OllamaClientService];
-    G -- Chama nomic-embed-text --> H[Embeddings (Vetores)];
-    H --> I[Banco de Dados (SQL Server)];
-    I(Salva Chunks + Embeddings na tabela DataChunks);
+    A["Usuário faz upload de arquivos (PDF, XLSX, ...)"] --> B[API: CollectionController]
+    B --> C[Serviço: FileProcessorService]
+    C -- Extrai Texto --> D[Texto Puro]
+    D --> E[Serviço: DataIngestionService]
+    E -- Divide em Chunks --> F[Pedaços de Texto]
+    F --> G[Serviço: OllamaClientService]
+    G -- Chama nomic-embed-text --> H[Embeddings (Vetores)]
+    H --> I[Banco de Dados (SQL Server)]
+    I[Salva Chunks + Embeddings na tabela DataChunks]

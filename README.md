@@ -20,7 +20,7 @@ Ele permite que você "converse com seus dados" (PDFs, CSVs, TXTs, XLSX) de form
 
 ---
 
-## ✨ Funcionalidades Principais
+##  Funcionalidades Principais
 
 * **Autenticação Segura:** Sistema completo de registro e login de usuários com tokens **JWT** e gerenciamento via **ASP.NET Core Identity**.
 * **Gerenciamento de Coleções:** Crie "bases de conhecimento" isoladas. Cada coleção possui seu próprio contexto de IA e conjunto de documentos.
@@ -69,8 +69,8 @@ flowchart TD
     B --> C[Serviço: FileProcessorService];
     C -- Extrai Texto --> D[Texto Puro];
     D --> E[Serviço: DataIngestionService];
-    E -- Divide em "Chunks" --> F[Pedaços de Texto];
+    E -- Divide em Chunks --> F[Pedaços de Texto];
     F --> G[Serviço: OllamaClientService];
-    G -- Chama 'nomic-embed-text' --> H[Embeddings (Vetores)];
+    G -- Chama nomic-embed-text --> H[Embeddings (Vetores)];
     H --> I[Banco de Dados (SQL Server)];
     I(Salva Chunks + Embeddings na tabela DataChunks);

@@ -74,3 +74,4 @@ flowchart TD
     G -- Chama nomic-embed-text --> H[Embeddings (Vetores)]
     H --> I[Banco de Dados (SQL Server)]
     I[Salva Chunks + Embeddings na tabela DataChunks]
+```

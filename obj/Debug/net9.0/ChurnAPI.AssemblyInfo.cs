@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChurnAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6ab7c6dae07751c1cadb8644298521f67918379")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChurnAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChurnAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

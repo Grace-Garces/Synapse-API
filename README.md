@@ -71,7 +71,7 @@ flowchart TD
     D --> E[Serviço: DataIngestionService]
     E -- Divide em Chunks --> F[Pedaços de Texto]
     F --> G[Serviço: OllamaClientService]
-    G -- Chama nomic-embed-text --> H[Embeddings (Vetores)]
-    H --> I[Banco de Dados (SQL Server)]
-    I[Salva Chunks + Embeddings na tabela DataChunks]
+    G -- Chama nomic-embed-text --> H[Embeddings - Vetores]
+    H --> I[Banco de Dados - SQL Server]
+    I --> J[Salva Chunks + Embeddings na tabela DataChunks]
 ```

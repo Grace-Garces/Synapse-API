@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Coleção - Synapse</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <h1>🧠 Synapse</h1>
+            <div class="header-right">
+                <nav>
+                    <a href="../Home/home.html">Home</a>
+                    <a href="create.html" class="active">Criar Coleção</a>
+                </nav>
+                <button class="menu-toggle" id="menu-toggle">☰</button>
+                <button id="btn-logout" class="btn-danger btn-small">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="page-header">
+            <h1>Criar Nova Coleção</h1>
+            <p>Configure o contexto e envie seus documentos</p>
+        </div>
+
+        <div class="grid grid-2">
+            <!-- LEFT COLUMN: Configuration -->
+            <div>
+                <!-- Collection Info Card -->
+                <div class="card">
+                    <h2>ℹ️ Informações da Coleção</h2>
+                    
+                    <div class="form-group">
+                        <label for="collection-name">Nome da Coleção *</label>
+                        <input type="text" id="collection-name" placeholder="ex: Manual de Culinária" value="documento_teste">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="collection-desc">Descrição</label>
+                        <textarea id="collection-desc" placeholder="Descreva o propósito desta coleção...">Coleção de testes</textarea>
+                    </div>
+                </div>
+
+                <!-- Context Configuration Card -->
+                <div class="card">
+                    <h2>🤖 Configurar Contexto</h2>
+                    
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <button class="context-btn active" data-mode="manual" style="flex: 1; padding: 1rem; border: 2px solid var(--primary); background: rgba(99, 102, 241, 0.2); border-radius: 8px; color: var(--light); cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                            ✍️ Manual
+                        </button>
+                        <button class="context-btn" data-mode="ai" style="flex: 1; padding: 1rem; border: 2px solid transparent; background: transparent; border-radius: 8px; color: var(--light); cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                            🤖 Com IA
+                        </button>
+                    </div>
+
+                    <!-- Manual Context -->
+                    <div id="manual-context" class="context-mode">
+                        <div class="form-group">
+                            <label for="context-manual">Contexto da IA</label>
+                            <textarea id="context-manual" placeholder="Digite o contexto que a IA deve usar ao responder. Exemplo: 'Você é um especialista em culinária italiana e deve responder apenas com base nos documentos fornecidos.'" style="min-height: 150px;">Você é um especialista e deve responder de forma precisa.</textarea>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">
+                            💡 Dica: Quanto mais específico o contexto, melhor será a resposta da IA.
+                        </p>
+                    </div>
+
+                    <!-- AI Context -->
+                    <div id="ai-context" class="context-mode" style="display: none;">
+                        <div class="form-group">
+                            <label for="context-description">Descrição do Contexto</label>
+                            <textarea id="context-description" placeholder="Descreva que tipo de persona/contexto você deseja que a IA gere. Exemplo: 'Especialista em culinária italiana com conhecimento profundo em receitas tradicionais.'" style="min-height: 150px;"></textarea>
+                        </div>
+                        <button id="btn-generate-context" class="btn-primary" style="width: 100%; margin-top: 1rem;">
+                            ✨ Gerar Contexto com IA
+                        </button>
+                        <div class="output" id="ai-context-output" style="display: none; margin-top: 1rem;">
+                            <h3>Contexto Gerado:</h3>
+                            <pre id="generated-context"></pre>
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                <button id="btn-accept-context" class="btn-primary btn-small" style="flex: 1;">✓ Aceitar</button>
+                                <button id="btn-regenerate-context" class="btn-secondary btn-small" style="flex: 1;">🔄 Regenerar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: File Upload & Status -->
+            <div>
+                <!-- File Upload Card -->
+                <div class="card">
+                    <h2>📤 Enviar Documentos</h2>
+                    
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" id="upload-area">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📁</div>
+                        <p style="color: var(--light); font-weight: 600; margin-bottom: 0.5rem;">Clique ou arraste arquivos aqui</p>
+                        <p style="color: var(--gray-500); font-size: 0.85rem;">Suportados: PDF, CSV, TXT, XLSX (máx 5 arquivos)</p>
+                        <input type="file" id="file-input" multiple style="display: none;" accept=".pdf,.csv,.txt,.xlsx,.xls">
+                    </div>
+
+                    <!-- File List -->
+                    <div id="file-list" style="margin-top: 1.5rem;">
+                        <h3 style="font-size: 0.95rem; color: var(--light); margin-bottom: 1rem;">Arquivos Selecionados</h3>
+                        <div id="files-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <p style="color: var(--gray-500); font-size: 0.85rem;">Nenhum arquivo selecionado</p>
+                        </div>
+                    </div>
+
+                    <button id="btn-upload" class="btn-primary" style="width: 100%; margin-top: 1.5rem; display: none;">
+                        ⬆️ Enviar Arquivos e Criar Coleção
+                    </button>
+                </div>
+
+                <!-- Status Card -->
+                <div class="card">
+                    <h2>📊 Status</h2>
+                    <div id="status-content" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <p style="color: var(--gray-500); font-size: 0.85rem;">Nome da Coleção</p>
+                            <p id="status-name" style="color: var(--light); font-weight: 600;">-</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--gray-500); font-size: 0.85rem;">Arquivos</p>
+                            <p id="status-files" style="color: var(--light); font-weight: 600;">0 arquivos</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--gray-500); font-size: 0.85rem;">Contexto</p>
+                            <p id="status-context" style="color: var(--warning); font-weight: 600;">Pendente...</p>
+                        </div>
+                    </div>
+                        <div class="status" id="uploadStatus" style="display: none; margin-top: 1rem;">
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADER -->
+    <div id="loader" class="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Processando...</div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../JS/auth.js"></script>
+    <script src="../JS/api.js"></script>
+    <script src="create.js"></script>
+</body>
+</html>

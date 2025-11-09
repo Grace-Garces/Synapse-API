@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da BrainAPI</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            color: #1a73e8;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Garante que o padding não afete a largura */
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #185abc;
+        }
+        .output, .status {
+            margin-top: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 15px;
+            min-height: 50px;
+            white-space: pre-wrap; /* Preserva quebras de linha */
+            word-wrap: break-word;
+        }
+        .output h3, .status h3 {
+            margin-top: 0;
+            font-size: 1em;
+            color: #555;
+        }
+        .loader {
+            display: none; /* Oculto por padrão */
+            text-align: center;
+            padding: 20px;
+            font-weight: 600;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Painel de Teste - BrainAPI</h1>
+
+        <div id="loader" class="loader">Carregando...</div>
+
+        <div class="card">
+            <h2>1. Testar Gerador de Persona</h2>
+            <div class="form-group">
+                <label for="persona-desc">Descrição da Persona:</label>
+                <input type="text" id="persona-desc" value="Especialista em culinária italiana">
+            </div>
+            <button id="btn-persona">Gerar Contexto</button>
+            <div class="output" id="persona-output">
+                <h3>Contexto Gerado:</h3>
+                <pre></pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>2. Testar RAG - Ingestão de Arquivo</h2>
+            <div class="form-group">
+                <label for="ingest-collection">Nome da Coleção:</label>
+                <input type="text" id="ingest-collection" value="documento_teste">
+            </div>
+            <div class="form-group">
+                <label for="ingest-file">Arquivo (PDF, CSV, XLSX, TXT):</label>
+                <input type="file" id="ingest-file" multiple>
+            </div>
+            <button id="btn-ingest">Enviar Arquivo</button>
+            <div class="status" id="ingest-status">
+                <h3>Status:</h3>
+                <p>Aguardando envio...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>3. Testar RAG - Consulta</h2>
+            <div class="form-group">
+                <label for="query-collection">Nome da Coleção:</label>
+                <input type="text" id="query-collection" value="documento_teste">
+            </div>
+            <div class="form-group">
+                <label for="query-question">Pergunta:</label>
+                <input type="text" id="query-question" value="Qual o tópico principal deste documento?">
+            </div>
+            <button id="btn-query">Perguntar</button>
+            <div class="output" id="query-answer">
+                <h3>Resposta:</h3>
+                <p></p>
+            </div>
+            <div class="output" id="query-sources">
+                <h3>Fontes:</h3>
+                <pre></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // URL base da sua API. Ajuste a porta se necessário (ex: :7296 para https)
+        const API_URL = 'http://localhost:5292'; 
+        const loader = document.getElementById('loader');
+
+        // --- 1. Gerador de Persona ---
+        const btnPersona = document.getElementById('btn-persona');
+        const personaDesc = document.getElementById('persona-desc');
+        const personaOutput = document.querySelector('#persona-output pre');
+
+        btnPersona.addEventListener('click', async () => {
+            loader.style.display = 'block';
+            personaOutput.textContent = '';
+            try {
+                const response = await fetch(`${API_URL}/api/persona/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description: personaDesc.value })
+                });
+
+                if (!response.ok) throw new Error(`Erro: ${response.status} ${response.statusText}`);
+                
+                const data = await response.json();
+                personaOutput.textContent = data.generatedContext;
+
+            } catch (error) {
+                personaOutput.textContent = `Erro ao conectar com a API: ${error.message}`;
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+
+        // --- 2. Ingestão de Arquivo ---
+        // --- 2. Ingestão de Arquivo ---
+        const btnIngest = document.getElementById('btn-ingest');
+        const ingestCollection = document.getElementById('ingest-collection');
+        const ingestFile = document.getElementById('ingest-file');
+        const ingestStatus = document.querySelector('#ingest-status p');
+
+        btnIngest.addEventListener('click', async () => {
+            if (ingestFile.files.length === 0) {
+                ingestStatus.textContent = 'Por favor, selecione um arquivo.';
+                return;
+            }
+            if (ingestFile.files.length > 5) {
+                ingestStatus.textContent = 'Erro: Você só pode enviar até 5 arquivos por vez.';
+                return;
+            }
+            if (!ingestCollection.value) {
+                ingestStatus.textContent = 'Por favor, defina um nome para a coleção.';
+                return;
+            }
+
+            loader.style.display = 'block';
+            ingestStatus.textContent = 'Enviando arquivos...';
+
+            const formData = new FormData();
+            
+            // Loop para adicionar TODOS os arquivos ao FormData
+            // A chave 'files' DEVE corresponder ao parâmetro C# (List<IFormFile> files)
+            for (const file of ingestFile.files) {
+                formData.append('files', file);
+            }
+
+            const collectionName = encodeURIComponent(ingestCollection.value);
+
+            try {
+                const response = await fetch(`${API_URL}/api/data/ingest-file?collectionName=${collectionName}`, {
+                    method: 'POST',
+                    body: formData 
+                    // Nota: Não defina 'Content-Type' ao usar FormData
+                });
+
+                const responseText = await response.text();
+                if (!response.ok) throw new Error(responseText);
+                
+                ingestStatus.textContent = responseText;
+
+            } catch (error) {
+                ingestStatus.textContent = `Erro ao enviar arquivos: ${error.message}`;
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+
+        // --- 3. Consulta RAG ---
+        const btnQuery = document.getElementById('btn-query');
+        const queryCollection = document.getElementById('query-collection');
+        const queryQuestion = document.getElementById('query-question');
+        const queryAnswer = document.querySelector('#query-answer p');
+        const querySources = document.querySelector('#query-sources pre');
+
+        btnQuery.addEventListener('click', async () => {
+            loader.style.display = 'block';
+            queryAnswer.textContent = '';
+            querySources.textContent = '';
+
+            try {
+                const response = await fetch(`${API_URL}/api/query/ask`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        collectionName: queryCollection.value,
+                        question: queryQuestion.value
+                    })
+                });
+
+                if (!response.ok) throw new Error(`Erro: ${response.status} ${response.statusText}`);
+
+                const data = await response.json();
+                queryAnswer.textContent = data.answer;
+                
+                const sourcesText = data.sources.map((src, index) => `--- Fonte ${index + 1} ---\n${src}`).join('\n\n');
+                querySources.textContent = sourcesText || 'Nenhuma fonte encontrada.';
+
+            } catch (error) {
+                queryAnswer.textContent = `Erro ao consultar a API: ${error.message}`;
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+
+    </script>
+</body>
+</html>
